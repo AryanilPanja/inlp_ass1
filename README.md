@@ -88,3 +88,5 @@ You can toggle the following variables at the top of `main.py`:
 | BPE | 596,398.92 | 46.44 | **36.45** | 
 
 PS: (Honestly one of the worse ones - very small dataset for training and testing)
+
+PPS: .pkl files and BPE.jsons are present at [Google Drive](https://drive.google.com/drive/folders/1e1enfJz-e9sylHNXA699vf5IKDMHNb29?usp=sharing)
