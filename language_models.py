@@ -54,6 +54,9 @@ class LanguageModel:
 
     def get_probability(self, word, context, order=None):
         """Calculates the probability of a word given a context using the selected smoothing."""
+        # Small epsilon to avoid zero probabilities
+        EPSILON = 1e-10
+        
         if order is None: order = self.n
         context = tuple(context[-(order-1):]) if order > 1 else ()
 
@@ -62,7 +65,7 @@ class LanguageModel:
         # --- FIX: Base Case to prevent KeyError: 0 ---
         # If we back off past Unigrams (order 1), return Uniform Probability (1 / Vocab Size)
         if order == 0:
-            return 1 / len(self.vocab) if len(self.vocab) > 0 else 0
+            return 1 / len(self.vocab) if len(self.vocab) > 0 else EPSILON
 
         # Adjust context to match the current order
         # e.g. for order 3, we only need the last 2 words of context
@@ -73,7 +76,7 @@ class LanguageModel:
         if self.smoothing is None:
             count = self.counts[order][context][word]
             total = self.context_totals[order][context]
-            return count / total if total > 0 else 0
+            return count / total if total > 0 else EPSILON
 
         # --- 2. Witten-Bell Smoothing ---
         elif self.smoothing == 'witten-bell':
@@ -96,7 +99,7 @@ class LanguageModel:
                 if order > 1:
                     return self.get_probability(word, context, order - 1)
                 else:
-                    return 1 / len(self.vocab) if self.vocab else 0
+                    return 1 / len(self.vocab) if self.vocab else EPSILON
 
         # --- 3. Kneser-Ney Smoothing (Simplified version) ---
         elif self.smoothing == 'kneser-ney':
@@ -105,7 +108,7 @@ class LanguageModel:
                 count = self.kn_continuation_counts[word]
                 total = self.kn_total_continuation
                 # Fallback to uniform if total is 0 (shouldn't happen with trained data)
-                return count / total if total > 0 else 1 / len(self.vocab)
+                return count / total if total > 0 else (1 / len(self.vocab) if self.vocab else EPSILON)
 
             # Recursive Step for orders > 1
             count = self.counts[order][context][word]

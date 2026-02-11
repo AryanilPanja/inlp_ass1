@@ -10,7 +10,7 @@ from language_models import LanguageModel
 # --- USER CONFIGURATION (TOGGLES) ---
 
 # 1. Language Settings
-LANG = "mn"  # 'en' or 'mn'
+LANG = "en"  # 'en' or 'mn'
 
 # 2. Data Type
 DATA_TYPE = "final"  # 'sample' or 'final'
